@@ -1,7 +1,6 @@
 backend:
   name: github
-  # TODO: replace with your-github-username/chrisfilmarchive once the repo exists
-  repo: REPLACE_ME/chrisfilmarchive
+  repo: visualbychris-cmd/chrisfilmarchive
   branch: main
 
 media_folder: "public/images/uploads"

@@ -35,15 +35,10 @@ Todo el texto, las fotos y los vídeos embebidos se editan desde un panel en `/a
 
 Necesitas que el proyecto esté en un repositorio de GitHub (ver más abajo) y desplegado (recomendado: Netlify).
 
-1. Sube el proyecto a GitHub (instrucciones abajo).
-2. Edita `public/admin/config.yml` y sustituye la línea:
-   ```yaml
-   repo: REPLACE_ME/chrisfilmarchive
-   ```
-   por tu usuario real, por ejemplo `repo: cabm195/chrisfilmarchive`.
-3. Despliega el sitio (ver sección de despliegue).
-4. Entra en `https://tu-sitio.com/admin/`.
-5. Pulsa **"Sign In Using Access Token"**.
+1. Sube el proyecto a GitHub (instrucciones abajo). El repo ya está configurado como `visualbychris-cmd/chrisfilmarchive` en `public/admin/config.yml`.
+2. Despliega el sitio (ver sección de despliegue).
+3. Entra en `https://tu-sitio.com/admin/`.
+4. Pulsa **"Sign In Using Access Token"**.
    - Sveltia te da un link directo a GitHub para generar un *personal access token* con los permisos ya preseleccionados (solo acceso a este repo).
    - Generas el token en GitHub, lo copias, lo pegas en el diálogo de Sveltia.
    - Listo — no hace falta crear ninguna OAuth App, ni backend, ni compartir tu cuenta con nadie. El token se queda solo en tu navegador.
