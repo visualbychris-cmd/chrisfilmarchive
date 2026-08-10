@@ -1,6 +1,5 @@
 ---
 import "../styles/global.css";
-import SocialIcons from "../components/SocialIcons.astro";
 import { getHome } from "../lib/data";
 
 interface Props {
@@ -41,7 +40,6 @@ const path = new URL(Astro.request.url).pathname;
       <slot />
     </main>
     <footer class="site-footer">
-      <SocialIcons socials={home.socials} />
       <p>&copy; {new Date().getFullYear()} {home.name}. All rights reserved.</p>
     </footer>
   </body>
