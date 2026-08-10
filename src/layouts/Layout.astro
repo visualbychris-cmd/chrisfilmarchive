@@ -30,7 +30,7 @@ const path = new URL(Astro.request.url).pathname;
   </head>
   <body>
     <header class:list={["site-header", { "on-light": !transparentHeader }]}>
-      <a class="brand" href="/">{home.name}</a>
+      {!transparentHeader && <a class="brand" href="/">{home.name}</a>}
       <nav>
         <a href="/" aria-current={path === "/" ? "page" : undefined}>Home</a>
         <a href="/work" aria-current={path.startsWith("/work") ? "page" : undefined}>Work</a>

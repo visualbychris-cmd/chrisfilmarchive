@@ -99,6 +99,7 @@ h3 {
 .site-header nav {
   display: flex;
   gap: 24px;
+  margin-left: auto;
   font-family: var(--font-body);
   font-weight: 600;
   font-size: 0.95rem;
