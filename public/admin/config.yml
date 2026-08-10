@@ -1,0 +1,124 @@
+backend:
+  name: github
+  # TODO: replace with your-github-username/chrisfilmarchive once the repo exists
+  repo: REPLACE_ME/chrisfilmarchive
+  branch: main
+
+media_folder: "public/images/uploads"
+public_folder: "/images/uploads"
+
+collections:
+  - name: "home"
+    label: "Home"
+    files:
+      - name: "home"
+        label: "Home Page"
+        file: "src/content/home/home.yaml"
+        fields:
+          - { name: "name", label: "Name", widget: "string" }
+          - { name: "tagline", label: "Tagline", widget: "text" }
+          - { name: "ctaLabel", label: "Button label", widget: "string" }
+          - { name: "heroVideo", label: "Hero background video", widget: "file" }
+          - name: "socials"
+            label: "Social links"
+            widget: "list"
+            fields:
+              - name: "platform"
+                label: "Platform"
+                widget: "select"
+                options: ["linkedin", "instagram", "tiktok", "youtube"]
+              - { name: "url", label: "URL", widget: "string" }
+
+  - name: "sections"
+    label: "Work Sections"
+    files:
+      - name: "sections"
+        label: "Work Sections"
+        file: "src/content/sections/sections.yaml"
+        fields:
+          - { name: "workTitle", label: "Work page title", widget: "string" }
+          - { name: "workSubtitle", label: "Work page subtitle", widget: "string" }
+          - name: "items"
+            label: "Sections"
+            widget: "list"
+            fields:
+              - name: "slug"
+                label: "Slug"
+                widget: "string"
+                hint: "Must match one of: video, short-form-content, photo, video-editing-only"
+              - { name: "title", label: "Title", widget: "string" }
+              - { name: "year", label: "Year", widget: "string" }
+              - { name: "cover", label: "Cover image", widget: "image" }
+              - { name: "intro", label: "Intro text", widget: "text" }
+
+  - name: "video"
+    label: "Video"
+    files:
+      - name: "video"
+        label: "Video Items"
+        file: "src/content/video/video.yaml"
+        fields:
+          - name: "items"
+            label: "Videos"
+            widget: "list"
+            fields:
+              - { name: "title", label: "Title", widget: "string" }
+              - { name: "description", label: "Description", widget: "text", required: false }
+              - name: "embed"
+                label: "Embed URL"
+                widget: "string"
+                hint: "Paste the YouTube/Vimeo embed URL, e.g. https://www.youtube.com/embed/VIDEO_ID"
+
+  - name: "shortForm"
+    label: "Short-form Content"
+    files:
+      - name: "short-form"
+        label: "Short-form Items"
+        file: "src/content/short-form/short-form.yaml"
+        fields:
+          - name: "items"
+            label: "Videos"
+            widget: "list"
+            fields:
+              - { name: "title", label: "Title", widget: "string" }
+              - { name: "description", label: "Description", widget: "text", required: false }
+              - name: "embed"
+                label: "Embed URL"
+                widget: "string"
+                hint: "Paste the YouTube/Vimeo embed URL, e.g. https://www.youtube.com/embed/VIDEO_ID"
+
+  - name: "videoEditing"
+    label: "Video Editing Only"
+    files:
+      - name: "video-editing"
+        label: "Video Editing Items"
+        file: "src/content/video-editing/video-editing.yaml"
+        fields:
+          - name: "items"
+            label: "Videos"
+            widget: "list"
+            fields:
+              - { name: "title", label: "Title", widget: "string" }
+              - { name: "description", label: "Description", widget: "text", required: false }
+              - name: "embed"
+                label: "Embed URL"
+                widget: "string"
+                hint: "Paste the YouTube/Vimeo embed URL, e.g. https://www.youtube.com/embed/VIDEO_ID"
+
+  - name: "photos"
+    label: "Photo"
+    files:
+      - name: "photos"
+        label: "Photo Items"
+        file: "src/content/photos/photos.yaml"
+        fields:
+          - name: "items"
+            label: "Photos"
+            widget: "list"
+            fields:
+              - { name: "image", label: "Image", widget: "image" }
+              - name: "category"
+                label: "Category"
+                widget: "select"
+                options: ["portrait", "sport", "travel"]
+              - { name: "caption", label: "Caption", widget: "string", required: false }

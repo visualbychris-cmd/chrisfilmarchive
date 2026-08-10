@@ -1,0 +1,133 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getHome, getSections } from "../../lib/data";
+
+const home = getHome();
+const { workTitle, workSubtitle, items } = getSections();
+---
+
+<Layout title={`Work — ${home.name}`}>
+  <section class="intro">
+    <h1>{workTitle}</h1>
+    <p>{workSubtitle}</p>
+    <span class="arrow">&#8595;</span>
+  </section>
+
+  <section class="grid">
+    {
+      items.map((item) => (
+        <a class="tile" href={`/${item.slug}`}>
+          <div class="tile-media">
+            <img src={item.cover} alt={item.title} loading="lazy" />
+          </div>
+          <div class="tile-caption">
+            <h2>{item.title}</h2>
+            <span>{item.year}</span>
+          </div>
+        </a>
+      ))
+    }
+  </section>
+</Layout>
+
+<style>
+  .intro {
+    min-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 20px;
+    padding: 120px 24px 40px;
+  }
+
+  .intro h1 {
+    font-size: clamp(2rem, 4vw, 3rem);
+  }
+
+  .intro p {
+    color: var(--muted);
+    font-size: 1.1rem;
+    margin: 0;
+  }
+
+  .arrow {
+    margin-top: 20px;
+    color: var(--muted);
+    font-size: 1.4rem;
+    animation: bob 2s ease-in-out infinite;
+  }
+
+  @keyframes bob {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(6px);
+    }
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .tile {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    display: block;
+  }
+
+  .tile-media {
+    position: absolute;
+    inset: 0;
+  }
+
+  .tile-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .tile:hover .tile-media img {
+    transform: scale(1.05);
+  }
+
+  .tile-caption {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: linear-gradient(180deg, rgba(2, 42, 85, 0.15), rgba(2, 42, 85, 0.55));
+    color: #fff;
+    text-align: center;
+  }
+
+  .tile-caption h2 {
+    color: #fff;
+    font-size: clamp(1.2rem, 2.4vw, 1.8rem);
+    letter-spacing: 0.03em;
+  }
+
+  .tile-caption span {
+    font-size: 0.85rem;
+    opacity: 0.85;
+  }
+
+  @media (max-width: 720px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+
+    .intro {
+      padding-top: 140px;
+    }
+  }
+</style>

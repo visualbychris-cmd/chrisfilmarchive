@@ -1,0 +1,48 @@
+---
+import "../styles/global.css";
+import SocialIcons from "../components/SocialIcons.astro";
+import { getHome } from "../lib/data";
+
+interface Props {
+  title: string;
+  description?: string;
+  transparentHeader?: boolean;
+}
+
+const { title, description = "Christian Bustos — Filmmaker and photographer.", transparentHeader = false } = Astro.props;
+const home = getHome();
+const path = new URL(Astro.request.url).pathname;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,700&family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class:list={["site-header", { "on-light": !transparentHeader }]}>
+      <a class="brand" href="/">{home.name}</a>
+      <nav>
+        <a href="/" aria-current={path === "/" ? "page" : undefined}>Home</a>
+        <a href="/work" aria-current={path.startsWith("/work") ? "page" : undefined}>Work</a>
+      </nav>
+    </header>
+    <main>
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <SocialIcons socials={home.socials} />
+      <p>&copy; {new Date().getFullYear()} {home.name}. All rights reserved.</p>
+    </footer>
+  </body>
+</html>

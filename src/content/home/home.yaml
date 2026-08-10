@@ -1,0 +1,13 @@
+name: "Christian Bustos"
+tagline: "Filmmaker and photographer with a passion for documenting and telling stories."
+ctaLabel: "My work here"
+heroVideo: "/video/hero-loop.mp4"
+socials:
+  - platform: "linkedin"
+    url: "https://www.linkedin.com/in/christian-bustos-mac%C3%ADas-41565515b"
+  - platform: "instagram"
+    url: "https://www.instagram.com/chris.filmarchive/"
+  - platform: "tiktok"
+    url: "https://www.tiktok.com/@chris.filmarchive"
+  - platform: "youtube"
+    url: "https://www.youtube.com/@chris.filmarchive"

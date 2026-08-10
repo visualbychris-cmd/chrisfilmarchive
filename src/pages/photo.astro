@@ -1,0 +1,262 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { getHome, getSection, getSections, getPhotoItems } from "../lib/data";
+
+const home = getHome();
+const current = getSection("photo")!;
+const related = getSections().items.filter((s) => s.slug !== "photo");
+const photos = getPhotoItems();
+
+const categories: { key: "portrait" | "sport" | "travel"; label: string }[] = [
+  { key: "portrait", label: "PORTRAIT" },
+  { key: "sport", label: "SPORT" },
+  { key: "travel", label: "TRAVEL" },
+];
+---
+
+<Layout title={`Photo — ${home.name}`} description={current.intro}>
+  <section class="head">
+    <h1>{current.title}</h1>
+    <p>{current.intro}</p>
+  </section>
+
+  {
+    categories.map((cat) => {
+      const items = photos.filter((p) => p.category === cat.key);
+      return (
+        <section class="category">
+          <h2>{cat.label}</h2>
+          <div class="masonry">
+            {items.map((photo) => (
+              <button type="button" class="thumb" data-full={photo.image}>
+                <img src={photo.image} alt={photo.caption || `${cat.label} photo`} loading="lazy" />
+              </button>
+            ))}
+          </div>
+        </section>
+      );
+    })
+  }
+
+  <section class="related">
+    <h2>You may also like</h2>
+    <div class="related-grid">
+      {
+        related.map((item) => (
+          <a class="related-tile" href={`/${item.slug}`}>
+            <img src={item.cover} alt={item.title} loading="lazy" />
+            <div class="related-caption">
+              <span class="related-title">{item.title}</span>
+              <span class="related-year">{item.year}</span>
+            </div>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  <div id="lightbox" class="lightbox" hidden>
+    <button type="button" class="lightbox-close" aria-label="Close">&times;</button>
+    <img id="lightbox-img" src="" alt="" />
+  </div>
+</Layout>
+
+<style>
+  .head {
+    padding: 140px 32px 48px;
+    max-width: 720px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .head h1 {
+    font-size: clamp(2rem, 4vw, 2.8rem);
+    letter-spacing: 0.02em;
+  }
+
+  .head p {
+    color: var(--muted);
+    font-size: 1.05rem;
+    margin-top: 14px;
+  }
+
+  .category {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 32px;
+  }
+
+  .category h2 {
+    font-size: 1.3rem;
+    letter-spacing: 0.08em;
+    margin-bottom: 20px;
+  }
+
+  .masonry {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+
+  .thumb {
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: zoom-in;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    border-radius: 6px;
+  }
+
+  .thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+
+  .thumb:hover img {
+    transform: scale(1.05);
+  }
+
+  .related {
+    background: #f7f7f7;
+    padding: 64px 32px;
+    text-align: center;
+    margin-top: 40px;
+  }
+
+  .related h2 {
+    font-size: 1.4rem;
+    margin-bottom: 28px;
+  }
+
+  .related-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  .related-tile {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    border-radius: 10px;
+    overflow: hidden;
+    display: block;
+  }
+
+  .related-tile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+
+  .related-tile:hover img {
+    transform: scale(1.06);
+  }
+
+  .related-caption {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(2, 42, 85, 0.15), rgba(2, 42, 85, 0.6));
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    text-align: center;
+    padding: 12px;
+  }
+
+  .related-title {
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 0.02em;
+  }
+
+  .related-year {
+    font-size: 0.75rem;
+    opacity: 0.85;
+  }
+
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 40px;
+  }
+
+  .lightbox[hidden] {
+    display: none;
+  }
+
+  .lightbox img {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 4px;
+  }
+
+  .lightbox-close {
+    position: absolute;
+    top: 24px;
+    right: 32px;
+    background: none;
+    border: 0;
+    color: #fff;
+    font-size: 2.2rem;
+    cursor: pointer;
+    line-height: 1;
+  }
+
+  @media (max-width: 960px) {
+    .masonry {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .masonry {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .related-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  const lightbox = document.getElementById("lightbox") as HTMLDivElement;
+  const lightboxImg = document.getElementById("lightbox-img") as HTMLImageElement;
+  const closeBtn = lightbox.querySelector(".lightbox-close") as HTMLButtonElement;
+
+  document.querySelectorAll<HTMLButtonElement>(".thumb").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const full = btn.dataset.full;
+      if (!full) return;
+      lightboxImg.src = full;
+      lightbox.hidden = false;
+    });
+  });
+
+  function close() {
+    lightbox.hidden = true;
+    lightboxImg.src = "";
+  }
+
+  closeBtn.addEventListener("click", close);
+  lightbox.addEventListener("click", (e) => {
+    if (e.target === lightbox) close();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") close();
+  });
+</script>
