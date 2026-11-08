@@ -119,5 +119,14 @@ collections:
               - name: "category"
                 label: "Category"
                 widget: "select"
-                options: ["portrait", "sport", "travel"]
+                options:
+                  - { label: "U20 FIFA World Cup", value: "u20-world-cup" }
+                  - { label: "Portrait", value: "portrait" }
+                  - { label: "Sport", value: "sport" }
+                  - { label: "Travel", value: "travel" }
+              - name: "group"
+                label: "Sub-heading (optional)"
+                widget: "string"
+                required: false
+                hint: "Photos in the same category with the same text here are shown together under that sub-heading, e.g. \"vs Italy\"."
               - { name: "caption", label: "Caption", widget: "string", required: false }

@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { load } from "js-yaml";
+import { imageSize } from "image-size";
 
 const contentDir = path.join(process.cwd(), "src/content");
 
@@ -49,8 +50,14 @@ export interface VideoList {
 
 export interface PhotoItem {
   image: string;
-  category: "portrait" | "sport" | "travel";
+  category: "u20-world-cup" | "portrait" | "sport" | "travel";
+  group?: string;
   caption?: string;
+}
+
+export interface PhotoWithSize extends PhotoItem {
+  width?: number;
+  height?: number;
 }
 
 export interface PhotoList {
@@ -81,6 +88,16 @@ export function getVideoEditingItems(): VideoItem[] {
   return readYaml<VideoList>("video-editing/video-editing.yaml").items;
 }
 
-export function getPhotoItems(): PhotoItem[] {
-  return readYaml<PhotoList>("photos/photos.yaml").items;
+// Reads each photo's real dimensions from /public so the gallery can lay
+// photos out by their true aspect ratio (landscape and portrait mixed).
+export function getPhotoItems(): PhotoWithSize[] {
+  return readYaml<PhotoList>("photos/photos.yaml").items.map((item) => {
+    try {
+      const file = path.join(process.cwd(), "public", item.image);
+      const { width, height } = imageSize(fs.readFileSync(file));
+      return { ...item, width, height };
+    } catch {
+      return item;
+    }
+  });
 }

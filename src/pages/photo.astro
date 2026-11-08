@@ -7,7 +7,8 @@ const current = getSection("photo")!;
 const related = getSections().items.filter((s) => s.slug !== "photo");
 const photos = getPhotoItems();
 
-const categories: { key: "portrait" | "sport" | "travel"; label: string }[] = [
+const categories: { key: "u20-world-cup" | "portrait" | "sport" | "travel"; label: string }[] = [
+  { key: "u20-world-cup", label: "U20 FIFA WORLD CUP" },
   { key: "portrait", label: "PORTRAIT" },
   { key: "sport", label: "SPORT" },
   { key: "travel", label: "TRAVEL" },
@@ -23,16 +24,37 @@ const categories: { key: "portrait" | "sport" | "travel"; label: string }[] = [
   {
     categories.map((cat) => {
       const items = photos.filter((p) => p.category === cat.key);
+      // Sub-headings: photos sharing the same `group` text are listed together.
+      const groups = [...new Set(items.map((p) => p.group ?? ""))].map((name) => ({
+        name,
+        items: items.filter((p) => (p.group ?? "") === name),
+      }));
       return (
         <section class="category">
           <h2>{cat.label}</h2>
-          <div class="masonry">
-            {items.map((photo) => (
-              <button type="button" class="thumb" data-full={photo.image}>
-                <img src={photo.image} alt={photo.caption || `${cat.label} photo`} loading="lazy" />
-              </button>
-            ))}
-          </div>
+          {groups.map((g) => (
+            <div class="group">
+              {g.name && <h3>{g.name}</h3>}
+              <div class="gallery">
+                {g.items.map((photo) => (
+                  <button
+                    type="button"
+                    class="thumb"
+                    data-full={photo.image}
+                    style={photo.width && photo.height ? `--ratio:${photo.width / photo.height}` : undefined}
+                  >
+                    <img
+                      src={photo.image}
+                      alt={photo.caption || `${g.name || cat.label} photo`}
+                      width={photo.width}
+                      height={photo.height}
+                      loading="lazy"
+                    />
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))}
         </section>
       );
     })
@@ -92,18 +114,41 @@ const categories: { key: "portrait" | "sport" | "travel"; label: string }[] = [
     margin-bottom: 20px;
   }
 
-  .masonry {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 14px;
+  .group + .group {
+    margin-top: 40px;
+  }
+
+  .group h3 {
+    font-size: 1.05rem;
+    font-weight: 400;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+
+  /* Justified rows: every photo keeps its real aspect ratio and each row
+     stretches to the full width (landscape and portrait mix cleanly). */
+  .gallery {
+    --row-h: 240px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .gallery::after {
+    content: "";
+    flex-grow: 1000000;
   }
 
   .thumb {
+    --ratio: 1.5;
+    flex-grow: calc(var(--ratio) * 100);
+    flex-basis: calc(var(--ratio) * var(--row-h));
+    aspect-ratio: var(--ratio);
+    min-width: 0;
     padding: 0;
     border: 0;
-    background: none;
+    background: #eee;
     cursor: zoom-in;
-    aspect-ratio: 4 / 5;
     overflow: hidden;
     border-radius: 6px;
   }
@@ -217,14 +262,15 @@ const categories: { key: "portrait" | "sport" | "travel"; label: string }[] = [
   }
 
   @media (max-width: 960px) {
-    .masonry {
-      grid-template-columns: repeat(3, 1fr);
+    .gallery {
+      --row-h: 190px;
     }
   }
 
   @media (max-width: 640px) {
-    .masonry {
-      grid-template-columns: repeat(2, 1fr);
+    .gallery {
+      --row-h: 130px;
+      gap: 8px;
     }
 
     .related-grid {
