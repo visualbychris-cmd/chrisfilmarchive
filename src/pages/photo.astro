@@ -78,7 +78,10 @@ const categories: { key: "u20-world-cup" | "portrait" | "sport" | "travel"; labe
 
   <div id="lightbox" class="lightbox" hidden>
     <button type="button" class="lightbox-close" aria-label="Close">&times;</button>
+    <button type="button" class="lightbox-nav lightbox-prev" aria-label="Previous photo">&#8249;</button>
+    <button type="button" class="lightbox-nav lightbox-next" aria-label="Next photo">&#8250;</button>
     <img id="lightbox-img" src="" alt="" />
+    <span id="lightbox-count" class="lightbox-count"></span>
   </div>
 </Layout>
 
@@ -243,6 +246,45 @@ const categories: { key: "u20-world-cup" | "portrait" | "sport" | "travel"; labe
     border-radius: 4px;
   }
 
+  .lightbox-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 52px;
+    height: 52px;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    font-size: 2.2rem;
+    line-height: 1;
+    padding-bottom: 4px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  .lightbox-nav:hover {
+    background: rgba(255, 255, 255, 0.28);
+  }
+
+  .lightbox-prev {
+    left: 20px;
+  }
+
+  .lightbox-next {
+    right: 20px;
+  }
+
+  .lightbox-count {
+    position: absolute;
+    bottom: 16px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.85rem;
+  }
+
   .lightbox-close {
     position: absolute;
     top: 24px;
@@ -271,32 +313,81 @@ const categories: { key: "u20-world-cup" | "portrait" | "sport" | "travel"; labe
       grid-template-columns: 1fr;
     }
   }
+
+  @media (max-width: 640px) {
+    .lightbox {
+      padding: 56px 12px;
+    }
+
+    .lightbox-nav {
+      width: 40px;
+      height: 40px;
+      font-size: 1.8rem;
+    }
+
+    .lightbox-prev {
+      left: 6px;
+    }
+
+    .lightbox-next {
+      right: 6px;
+    }
+  }
 </style>
 
 <script>
   const lightbox = document.getElementById("lightbox") as HTMLDivElement;
   const lightboxImg = document.getElementById("lightbox-img") as HTMLImageElement;
   const closeBtn = lightbox.querySelector(".lightbox-close") as HTMLButtonElement;
+  const prevBtn = lightbox.querySelector(".lightbox-prev") as HTMLButtonElement;
+  const nextBtn = lightbox.querySelector(".lightbox-next") as HTMLButtonElement;
+  const count = document.getElementById("lightbox-count") as HTMLSpanElement;
 
-  document.querySelectorAll<HTMLButtonElement>(".thumb").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const full = btn.dataset.full;
-      if (!full) return;
-      lightboxImg.src = full;
-      lightbox.hidden = false;
-    });
-  });
+  // All photos on the page, in the order they appear (wraps around at the ends).
+  const thumbs = Array.from(document.querySelectorAll<HTMLButtonElement>(".thumb"));
+  let current = -1;
+
+  function show(index: number) {
+    current = (index + thumbs.length) % thumbs.length;
+    const thumb = thumbs[current];
+    lightboxImg.src = thumb.dataset.full ?? "";
+    lightboxImg.alt = thumb.querySelector("img")?.alt ?? "";
+    count.textContent = `${current + 1} / ${thumbs.length}`;
+    lightbox.hidden = false;
+    // Warm the cache so the next/previous photo appears instantly.
+    for (const i of [current + 1, current - 1]) {
+      new Image().src = thumbs[(i + thumbs.length) % thumbs.length].dataset.full ?? "";
+    }
+  }
 
   function close() {
     lightbox.hidden = true;
     lightboxImg.src = "";
+    current = -1;
   }
 
+  thumbs.forEach((btn, i) => btn.addEventListener("click", () => show(i)));
+
   closeBtn.addEventListener("click", close);
+  prevBtn.addEventListener("click", () => show(current - 1));
+  nextBtn.addEventListener("click", () => show(current + 1));
   lightbox.addEventListener("click", (e) => {
     if (e.target === lightbox) close();
   });
   document.addEventListener("keydown", (e) => {
+    if (lightbox.hidden) return;
     if (e.key === "Escape") close();
+    else if (e.key === "ArrowRight") show(current + 1);
+    else if (e.key === "ArrowLeft") show(current - 1);
+  });
+
+  // Swipe left/right on touch screens.
+  let touchStartX = 0;
+  lightbox.addEventListener("touchstart", (e) => {
+    touchStartX = e.changedTouches[0].clientX;
+  }, { passive: true });
+  lightbox.addEventListener("touchend", (e) => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) > 50) show(dx < 0 ? current + 1 : current - 1);
   });
 </script>
