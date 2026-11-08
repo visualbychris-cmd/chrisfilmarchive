@@ -46,7 +46,7 @@ collections:
                 widget: "string"
                 hint: "Must match one of: video, short-form-content, photo, video-editing-only"
               - { name: "title", label: "Title", widget: "string" }
-              - { name: "year", label: "Year", widget: "string" }
+              - { name: "year", label: "Year (not shown on the site for now)", widget: "string" }
               - { name: "cover", label: "Cover image", widget: "image" }
               - { name: "intro", label: "Intro text", widget: "text" }
 

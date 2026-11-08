@@ -43,7 +43,6 @@ const related = sections.filter((s) => s.slug !== slug);
             <img src={item.cover} alt={item.title} loading="lazy" />
             <div class="related-caption">
               <span class="related-title">{item.title}</span>
-              <span class="related-year">{item.year}</span>
             </div>
           </a>
         ))
@@ -146,11 +145,6 @@ const related = sections.filter((s) => s.slug !== slug);
     font-weight: 700;
     font-size: 0.95rem;
     letter-spacing: 0.02em;
-  }
-
-  .related-year {
-    font-size: 0.75rem;
-    opacity: 0.85;
   }
 
   @media (max-width: 720px) {

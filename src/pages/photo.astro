@@ -69,7 +69,6 @@ const categories: { key: "u20-world-cup" | "portrait" | "sport" | "travel"; labe
             <img src={item.cover} alt={item.title} loading="lazy" />
             <div class="related-caption">
               <span class="related-title">{item.title}</span>
-              <span class="related-year">{item.year}</span>
             </div>
           </a>
         ))
@@ -221,11 +220,6 @@ const categories: { key: "u20-world-cup" | "portrait" | "sport" | "travel"; labe
     font-weight: 700;
     font-size: 0.95rem;
     letter-spacing: 0.02em;
-  }
-
-  .related-year {
-    font-size: 0.75rem;
-    opacity: 0.85;
   }
 
   .lightbox {
