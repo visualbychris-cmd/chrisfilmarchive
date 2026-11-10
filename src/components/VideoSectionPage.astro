@@ -2,11 +2,11 @@
 import Layout from "../layouts/Layout.astro";
 import VideoEmbed from "./VideoEmbed.astro";
 import { getHome, getSections } from "../lib/data";
-import type { VideoItem } from "../lib/data";
+import type { VideoWithSize } from "../lib/data";
 
 interface Props {
   slug: string;
-  items: VideoItem[];
+  items: VideoWithSize[];
 }
 
 const { slug, items } = Astro.props;
@@ -14,6 +14,13 @@ const home = getHome();
 const { items: sections } = getSections();
 const current = sections.find((s) => s.slug === slug)!;
 const related = sections.filter((s) => s.slug !== slug);
+
+// Items sharing the same `section` text are listed together under that
+// heading, in order of first appearance. Items without one come as plain list.
+const groups = [...new Set(items.map((i) => i.section ?? ""))].map((name) => ({
+  name,
+  items: items.filter((i) => (i.section ?? "") === name),
+}));
 ---
 
 <Layout title={`${current.title} — ${home.name}`} description={current.intro}>
@@ -24,12 +31,24 @@ const related = sections.filter((s) => s.slug !== slug);
 
   <section class="list">
     {
-      items.map((item) => (
-        <article class="item">
-          <VideoEmbed embed={item.embed} title={item.title} />
-          <h3>{item.title}</h3>
-          {item.description && <p>{item.description}</p>}
-        </article>
+      groups.map((group) => (
+        <div class="group">
+          {group.name && <h2 class="group-title">{group.name}</h2>}
+          {group.items.map((item) => (
+            <article class:list={["item", { portrait: !!item.posterWidth && !!item.posterHeight && item.posterWidth < item.posterHeight }]}>
+              <VideoEmbed
+                embed={item.embed}
+                video={item.video}
+                poster={item.poster}
+                width={item.posterWidth}
+                height={item.posterHeight}
+                title={item.title}
+              />
+              <h3>{item.title}</h3>
+              {item.description && <p>{item.description}</p>}
+            </article>
+          ))}
+        </div>
       ))
     }
   </section>
@@ -73,10 +92,34 @@ const related = sections.filter((s) => s.slug !== slug);
   .list {
     display: flex;
     flex-direction: column;
-    gap: 56px;
+    gap: 72px;
     max-width: 860px;
     margin: 0 auto;
     padding: 0 32px 80px;
+  }
+
+  .group {
+    display: flex;
+    flex-direction: column;
+    gap: 56px;
+  }
+
+  .group + .group {
+    border-top: 1px solid var(--line);
+    padding-top: 56px;
+  }
+
+  .group-title {
+    font-size: 1.5rem;
+    letter-spacing: 0.04em;
+    margin-bottom: -16px;
+  }
+
+  /* Vertical videos: narrower, centered, so they don't fill the page */
+  .item.portrait {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
   }
 
   .item h3 {

@@ -41,7 +41,18 @@ export interface Sections {
 export interface VideoItem {
   title: string;
   description?: string;
-  embed: string;
+  // Either an embed URL (YouTube, Vimeo, Adobe) ...
+  embed?: string;
+  // ... or a video file hosted on this site, with its cover image.
+  video?: string;
+  poster?: string;
+  // Optional heading: items sharing the same text are listed together.
+  section?: string;
+}
+
+export interface VideoWithSize extends VideoItem {
+  posterWidth?: number;
+  posterHeight?: number;
 }
 
 export interface VideoList {
@@ -76,16 +87,30 @@ export function getSection(slug: string): SectionItem | undefined {
   return getSections().items.find((item) => item.slug === slug);
 }
 
-export function getVideoItems(): VideoItem[] {
-  return readYaml<VideoList>("video/video.yaml").items;
+// For hosted video files, reads the cover image size so the player can use
+// the right aspect ratio (vertical or horizontal).
+function withPosterSize(items: VideoItem[]): VideoWithSize[] {
+  return items.map((item) => {
+    if (!item.poster) return item;
+    try {
+      const { width, height } = imageSize(fs.readFileSync(path.join(process.cwd(), "public", item.poster)));
+      return { ...item, posterWidth: width, posterHeight: height };
+    } catch {
+      return item;
+    }
+  });
 }
 
-export function getShortFormItems(): VideoItem[] {
-  return readYaml<VideoList>("short-form/short-form.yaml").items;
+export function getVideoItems(): VideoWithSize[] {
+  return withPosterSize(readYaml<VideoList>("video/video.yaml").items);
 }
 
-export function getVideoEditingItems(): VideoItem[] {
-  return readYaml<VideoList>("video-editing/video-editing.yaml").items;
+export function getShortFormItems(): VideoWithSize[] {
+  return withPosterSize(readYaml<VideoList>("short-form/short-form.yaml").items);
+}
+
+export function getVideoEditingItems(): VideoWithSize[] {
+  return withPosterSize(readYaml<VideoList>("video-editing/video-editing.yaml").items);
 }
 
 // Reads each photo's real dimensions from /public so the gallery can lay

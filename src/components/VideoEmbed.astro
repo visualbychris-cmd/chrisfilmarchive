@@ -1,22 +1,45 @@
 ---
 interface Props {
-  embed: string;
   title: string;
+  // Embedded player (YouTube, Vimeo, Adobe...)
+  embed?: string;
+  // Or a video file hosted on this site, with its cover image.
+  video?: string;
+  poster?: string;
+  // Cover image size, used to keep vertical videos vertical.
+  width?: number;
+  height?: number;
 }
 
-const { embed, title } = Astro.props;
+const { title, embed, video, poster, width, height } = Astro.props;
+const ratio = width && height ? `${width} / ${height}` : "16 / 9";
 ---
 
-<div class="video-embed">
-  <iframe
-    src={embed}
-    title={title}
-    loading="lazy"
-    allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
-    allowfullscreen
-    frameborder="0"
-  ></iframe>
-</div>
+{
+  video ? (
+    <video
+      class="video-file"
+      src={video}
+      poster={poster}
+      controls
+      playsinline
+      preload="none"
+      aria-label={title}
+      style={`aspect-ratio: ${ratio}`}
+    />
+  ) : (
+    <div class="video-embed">
+      <iframe
+        src={embed}
+        title={title}
+        loading="lazy"
+        allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
+        allowfullscreen
+        frameborder="0"
+      />
+    </div>
+  )
+}
 
 <style>
   .video-embed {
@@ -34,5 +57,13 @@ const { embed, title } = Astro.props;
     width: 100%;
     height: 100%;
     border: 0;
+  }
+
+  .video-file {
+    display: block;
+    width: 100%;
+    background: #000;
+    border-radius: 8px;
+    object-fit: contain;
   }
 </style>

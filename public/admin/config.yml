@@ -63,10 +63,18 @@ collections:
             fields:
               - { name: "title", label: "Title", widget: "string" }
               - { name: "description", label: "Description", widget: "text", required: false }
+              - name: "section"
+                label: "Section heading (optional)"
+                widget: "string"
+                required: false
+                hint: "Videos with the same text here are shown together under that heading, e.g. \"U20 FIFA WORLD CUP\"."
               - name: "embed"
                 label: "Embed URL"
                 widget: "string"
-                hint: "Paste the YouTube/Vimeo embed URL, e.g. https://www.youtube.com/embed/VIDEO_ID"
+                required: false
+                hint: "For YouTube/Vimeo: paste the embed URL, e.g. https://www.youtube.com/embed/VIDEO_ID. Leave empty if you upload a video file below."
+              - { name: "video", label: "Video file (alternative to Embed URL)", widget: "file", required: false }
+              - { name: "poster", label: "Cover image for the video file", widget: "image", required: false }
 
   - name: "shortForm"
     label: "Short-form Content"
@@ -81,10 +89,18 @@ collections:
             fields:
               - { name: "title", label: "Title", widget: "string" }
               - { name: "description", label: "Description", widget: "text", required: false }
+              - name: "section"
+                label: "Section heading (optional)"
+                widget: "string"
+                required: false
+                hint: "Videos with the same text here are shown together under that heading, e.g. \"U20 FIFA WORLD CUP\"."
               - name: "embed"
                 label: "Embed URL"
                 widget: "string"
-                hint: "Paste the YouTube/Vimeo embed URL, e.g. https://www.youtube.com/embed/VIDEO_ID"
+                required: false
+                hint: "For YouTube/Vimeo: paste the embed URL, e.g. https://www.youtube.com/embed/VIDEO_ID. Leave empty if you upload a video file below."
+              - { name: "video", label: "Video file (alternative to Embed URL)", widget: "file", required: false }
+              - { name: "poster", label: "Cover image for the video file", widget: "image", required: false }
 
   - name: "videoEditing"
     label: "Video Editing Only"
@@ -99,10 +115,18 @@ collections:
             fields:
               - { name: "title", label: "Title", widget: "string" }
               - { name: "description", label: "Description", widget: "text", required: false }
+              - name: "section"
+                label: "Section heading (optional)"
+                widget: "string"
+                required: false
+                hint: "Videos with the same text here are shown together under that heading, e.g. \"U20 FIFA WORLD CUP\"."
               - name: "embed"
                 label: "Embed URL"
                 widget: "string"
-                hint: "Paste the YouTube/Vimeo embed URL, e.g. https://www.youtube.com/embed/VIDEO_ID"
+                required: false
+                hint: "For YouTube/Vimeo: paste the embed URL, e.g. https://www.youtube.com/embed/VIDEO_ID. Leave empty if you upload a video file below."
+              - { name: "video", label: "Video file (alternative to Embed URL)", widget: "file", required: false }
+              - { name: "poster", label: "Cover image for the video file", widget: "image", required: false }
 
   - name: "photos"
     label: "Photo"
